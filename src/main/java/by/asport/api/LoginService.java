@@ -1,0 +1,87 @@
+package by.asport.api;
+
+import io.restassured.response.Response;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static io.restassured.RestAssured.given;
+
+public class LoginService {
+    private final String URL = "https://asport.by/user/auth?t=1758407389732";
+    private final String VALID_EMAIL = "cathzavizion%40gmail.com";
+    private final String VALID_PASSWORD = "itAcademy2025%26";
+    //private final String VALID_TOKEN = "login=login&type=email_password&email=cathzavizion%40gmail.com&password=itAcademy2025%26&_token=OwDl0h9DidSu59iVcv6TQBUhavRnPZuF9xPjvtbL";
+    private final String MALFORMED_BODY = "login=login&type=email_password&email=test%40gmail.com&password=password&_token=OwDl0h9DidSu59iVcv6TQBUhavRnPZuF9xPjvtbL";
+    private final String BODY_TEMPLATE= "login=login&type=email_password&email=%s&password=%s";
+
+    public String getValidEmail() {
+        return VALID_EMAIL;
+    }
+
+    public String getValidPassword() {
+        return VALID_PASSWORD;
+    }
+
+    //public String getValidToken() {
+       // return VALID_TOKEN;
+    //}
+
+    private Response response;
+
+    public String createBody(String email, String password, String token) {
+        return String.format(BODY_TEMPLATE, email, password, token);
+    }
+
+    public String createBody(String email, String password) {
+        return String.format(BODY_TEMPLATE, email, password);
+    }
+
+    private Map<String, String> createHeaders() {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("content-type", "application/x-www-form-urlencoded; charset=UTF-8");
+        headers.put("accept", "application/json, text/javascript, */*; q=0.01");
+        return headers;
+    }
+
+    public void doRequest(String email, String password, String token) {
+        response = given()
+                .headers(createHeaders())
+                .body(createBody(email, password, token))
+                .when().post(URL);
+    }
+
+    public void doRequest(String email, String password) {
+        response = given()
+                .headers(createHeaders())
+                .body(createBody(email, password))
+                .when().post(URL);
+    }
+
+    public void doRequest() {
+        response = given()
+                .headers(createHeaders())
+                .body(MALFORMED_BODY)
+                .when().post(URL);
+    }
+
+    public int getStatusCode() {
+        return response.getStatusCode();
+    }
+
+    public String getInvalidBodyMessage() {
+        return response.getBody().path("message");
+    }
+
+    public String getInvalidBodyErrorsPassword() {
+        return response.getBody().path("errors.password[0]");
+    }
+
+    public String getInvalidBodyErrorsEmail() {
+        return response.getBody().path("errors.email[0]");
+    }
+
+    public int getValidBodyMessage() {
+        return response.getBody().path("id");
+    }
+}
