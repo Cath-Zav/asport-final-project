@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LoginTest extends BaseLogger { @Test
+
 @DisplayName("Incorrect email and password")
 public void test1() {
     LoginService service = new LoginService();
