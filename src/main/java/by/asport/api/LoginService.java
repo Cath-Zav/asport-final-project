@@ -9,25 +9,20 @@ import static io.restassured.RestAssured.given;
 
 public class LoginService {
     private final String URL = "https://asport.by/user/auth?t=1758407389732";
-    private final String VALID_EMAIL = "cathzavizion%40gmail.com";
-    private final String VALID_PASSWORD = "itAcademy2025%26";
-    //private final String VALID_TOKEN = "login=login&type=email_password&email=cathzavizion%40gmail.com&password=itAcademy2025%26&_token=OwDl0h9DidSu59iVcv6TQBUhavRnPZuF9xPjvtbL";
     private final String MALFORMED_BODY = "login=login&type=email_password&email=test%40gmail.com&password=password&_token=OwDl0h9DidSu59iVcv6TQBUhavRnPZuF9xPjvtbL";
     private final String BODY_TEMPLATE= "login=login&type=email_password&email=%s&password=%s";
+    private final String VALID_EMAIL = "cathzavizion%40gmail.com";
+    private final String VALID_PASSWORD = "itAcademy2025%26";
 
-    public String getValidEmail() {
+    private Response response;
+
+    public String getValidEmailL() {
         return VALID_EMAIL;
     }
 
     public String getValidPassword() {
         return VALID_PASSWORD;
     }
-
-    //public String getValidToken() {
-       // return VALID_TOKEN;
-    //}
-
-    private Response response;
 
     public String createBody(String email, String password, String token) {
         return String.format(BODY_TEMPLATE, email, password, token);

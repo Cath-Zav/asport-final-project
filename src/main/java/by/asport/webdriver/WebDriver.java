@@ -1,5 +1,6 @@
 package by.asport.webdriver;
 
+import by.asport.logger.BaseLogger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -7,7 +8,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import java.time.Duration;
 import java.util.List;
 
-public class WebDriver {
+public class WebDriver extends BaseLogger {
     private static org.openqa.selenium.WebDriver driver;
 
     public static org.openqa.selenium.WebDriver getDriver() {
@@ -44,5 +45,14 @@ public class WebDriver {
 
     public static List<WebElement> findElements(String xpath) {
         return driver.findElements(By.xpath(xpath));
+    }
+
+    public static void pauseSeconds(long seconds) {
+        try {
+            Thread.sleep(java.time.Duration.ofSeconds(seconds).toMillis());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            logger.info("Pause was interrupted");
+        }
     }
 }

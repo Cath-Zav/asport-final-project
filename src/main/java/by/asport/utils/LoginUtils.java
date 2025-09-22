@@ -1,5 +1,11 @@
 package by.asport.utils;
 
+import by.asport.webdriver.WebDriver;
+import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -24,5 +30,10 @@ public class LoginUtils {
 
     public static String getRandomPassword() {
         return createRandomWord();
+    }
+
+    public static void waitUntilLoaded(String xpath) {
+        new WebDriverWait(WebDriver.getDriver(), Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
     }
 }
