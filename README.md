@@ -7,3 +7,4 @@
   - Cart
 2) API
   - Login
+  - Search
