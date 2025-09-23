@@ -1,54 +1,100 @@
 package by.asport.api;
 
+import io.restassured.RestAssured;
+import io.restassured.builder.MultiPartSpecBuilder;
+import io.restassured.config.EncoderConfig;
+import io.restassured.filter.cookie.CookieFilter;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
 
 public class SearchService {
     private static final String BASE_URI = "https://asport.by";
-    private static final String PATH = "/find";
+    private static final String FIND_PATH = "/find";
+    private static final String EXTENDED_PATH = "/template/find/extended";
+    private static final String CSS_PRODUCT_TITLE = "div.ok-product__main [itemprop=name], span[itemprop=name]";
 
-    private Response response;
+    private final CookieFilter cookieFilter = new CookieFilter();
+    private Response resp;
 
-    public void doRequest(String search) {
-        response = given()
+    String xsrf;
+
+    private Map<String, String> createHeadersForExtendedRequest() {
+        Map<String, String> headersExtended = new HashMap<>();
+        headersExtended.put("Accept", "application/json, text/plain, */*");
+        headersExtended.put("Origin", BASE_URI);
+        headersExtended.put("Referer", BASE_URI + FIND_PATH + "/");
+        headersExtended.put("X-XSRF-TOKEN", xsrf);
+
+        return headersExtended;
+    }
+
+    public void search(String query) {
+        // 1) Бутстрап: как в браузере — сразу на /find?findtext=...
+        Response bootstrap = given()
                 .baseUri(BASE_URI)
-                .basePath(PATH)
-                .urlEncodingEnabled(true)
-                .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7")
-                .queryParam("findtext", search)
+                .filter(cookieFilter)
                 .when()
-                .get()
+                .get(FIND_PATH + "?findtext=" + URLEncoder.encode(query, StandardCharsets.UTF_8))
                 .then()
                 .extract()
                 .response();
+
+        xsrf = Optional.ofNullable(bootstrap.getCookie("XSRF-TOKEN"))
+                .map(c -> URLDecoder.decode(c, StandardCharsets.UTF_8))
+                .orElse("");
+
+        // 2) POST /template/find/extended — сюда и идут параметры поиска
+        EncoderConfig enc = EncoderConfig.encoderConfig()
+                .appendDefaultContentCharsetToContentTypeIfUndefined(true)
+                .defaultContentCharset(StandardCharsets.UTF_8.name())
+                .encodeContentTypeAs("multipart/form-data", ContentType.MULTIPART);
+
+        resp = given()
+                .config(RestAssured.config().encoderConfig(enc))
+                .baseUri(BASE_URI)
+                .basePath(EXTENDED_PATH)
+                .filter(cookieFilter)
+                .contentType("multipart/form-data; charset=UTF-8")
+                .headers(createHeadersForExtendedRequest())
+                // multipart с явной UTF-8 для кириллицы
+                .multiPart(new MultiPartSpecBuilder("").controlName("sort").charset("UTF-8").build())
+                .multiPart(new MultiPartSpecBuilder("1").controlName("page_num").charset("UTF-8").build())
+                .multiPart(new MultiPartSpecBuilder(query).controlName("findtext").mimeType("text/plain").charset("UTF-8").build())
+                .multiPart(new MultiPartSpecBuilder("utf-8").controlName("charset").charset("UTF-8").build())
+                .multiPart(new MultiPartSpecBuilder("1").controlName("item_status").charset("UTF-8").build())
+                .when()
+                .post()
+                .then()
+                .extract()
+                .response();
+
     }
 
-    public Response getResponse() {
-        return response;
+    public int getResponseStatusCode() {
+        return resp.getStatusCode();
     }
 
-    public List<String> extractProductNames() {
-        String html = new String(response.asByteArray(), StandardCharsets.UTF_8);
-        Document doc = Jsoup.parse(html, BASE_URI);
-
-        Elements els = doc.select("div.product-name");
+    public List<String> getProductTitles() {
+        String html = resp.jsonPath().getString("content");
+        if (html == null) return List.of();
+        Document doc = Jsoup.parse(html);
+        // селектор шире на случай разных версток
+        Elements els = doc.select(CSS_PRODUCT_TITLE);
         return els.stream()
-                .map(e -> e.text().trim())
-                .filter(s -> !s.isEmpty())
-                .collect(Collectors.toList());
-    }
-
-    private static String normalize(String s) {
-        return s == null ? "" : s.replaceAll("\\s+", " ").trim().toLowerCase(Locale.ROOT);
+                .map(e -> e.text().trim().toLowerCase())
+                .toList();
     }
 }
