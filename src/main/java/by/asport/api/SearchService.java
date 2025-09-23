@@ -42,7 +42,6 @@ public class SearchService {
     }
 
     public void search(String query) {
-        // 1) Бутстрап: как в браузере — сразу на /find?findtext=...
         Response bootstrap = given()
                 .baseUri(BASE_URI)
                 .filter(cookieFilter)
@@ -56,7 +55,6 @@ public class SearchService {
                 .map(c -> URLDecoder.decode(c, StandardCharsets.UTF_8))
                 .orElse("");
 
-        // 2) POST /template/find/extended — сюда и идут параметры поиска
         EncoderConfig enc = EncoderConfig.encoderConfig()
                 .appendDefaultContentCharsetToContentTypeIfUndefined(true)
                 .defaultContentCharset(StandardCharsets.UTF_8.name())
@@ -69,7 +67,6 @@ public class SearchService {
                 .filter(cookieFilter)
                 .contentType("multipart/form-data; charset=UTF-8")
                 .headers(createHeadersForExtendedRequest())
-                // multipart с явной UTF-8 для кириллицы
                 .multiPart(new MultiPartSpecBuilder("").controlName("sort").charset("UTF-8").build())
                 .multiPart(new MultiPartSpecBuilder("1").controlName("page_num").charset("UTF-8").build())
                 .multiPart(new MultiPartSpecBuilder(query).controlName("findtext").mimeType("text/plain").charset("UTF-8").build())
@@ -80,7 +77,6 @@ public class SearchService {
                 .then()
                 .extract()
                 .response();
-
     }
 
     public int getResponseStatusCode() {

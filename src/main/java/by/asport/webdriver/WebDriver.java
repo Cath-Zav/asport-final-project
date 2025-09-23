@@ -8,7 +8,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import java.time.Duration;
 import java.util.List;
 
-public class WebDriver extends BaseLogger {
+public class    WebDriver extends BaseLogger {
     private static org.openqa.selenium.WebDriver driver;
 
     public static org.openqa.selenium.WebDriver getDriver() {

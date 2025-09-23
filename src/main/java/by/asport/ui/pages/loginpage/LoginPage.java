@@ -3,16 +3,16 @@ package by.asport.ui.pages.loginpage;
 import by.asport.webdriver.WebDriver;
 
 public class LoginPage {
-    private String LOGIN_FORM_TITLE = "//div[contains(@class,'ok-auth')]//span[@data-auth-info and contains(@class,'ok-auth__info')]";
-    private String EMAIL_FIELD = "//input[@class='form-control form-group  require_fields required data-input-check -state-empty']";
-    private String PASSWORD_FIELD = "//input[@class='form-control  require_fields required data-input-check -state-empty']";
+    private final String LOGIN_FORM_TITLE = "//div[contains(@class,'ok-auth')]//span[@data-auth-info and contains(@class,'ok-auth__info')]";
+    private final String EMAIL_FIELD = "//input[@class='form-control form-group  require_fields required data-input-check -state-empty']";
+    private final String PASSWORD_FIELD = "//input[@class='form-control  require_fields required data-input-check -state-empty']";
     private final String VALID_EMAIL = "cathzavizion@gmail.com";
     private final String VALID_PASSWORD = "itAcademy2025&";
-    private String BUTTON_LOGIN = "//button[@class='ok-btn -btn-theme-action -width-full']";
-    private String EMAIL_ERROR = "//div[@class='data-input-check has-error']";
-    private String PASSWORD_ERROR = "//span[@class='input-group has-error']";
-    private String BUTTON_GO_TO_RESTORE_PASSWORD = "//a[@class='ok-enter__restore-href']";
-    private String BUTTON_RESTORE_PASSWORD = "//form[@onsubmit='restore(this); return false']//button[@class='ok-btn -btn-theme-action -width-full']";
+    private final String BUTTON_LOGIN = "//button[@class='ok-btn -btn-theme-action -width-full']";
+    private final String EMAIL_ERROR = "//div[@class='data-input-check has-error']";
+    private final String PASSWORD_ERROR = "//span[@class='input-group has-error']";
+    private final String BUTTON_GO_TO_RESTORE_PASSWORD = "//a[@class='ok-enter__restore-href']";
+    private final String BUTTON_RESTORE_PASSWORD = "//form[@onsubmit='restore(this); return false']//button[@class='ok-btn -btn-theme-action -width-full']";
 
     public LoginPage() {
     }
