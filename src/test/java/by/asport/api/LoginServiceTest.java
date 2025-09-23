@@ -10,7 +10,7 @@ import org.junit.jupiter.params.provider.EmptySource;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class LoginTest extends BaseLogger { @Test
+public class LoginServiceTest extends BaseLogger { @Test
 
 @DisplayName("Incorrect email and password")
 public void test1() {
