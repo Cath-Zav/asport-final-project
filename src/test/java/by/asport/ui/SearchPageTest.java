@@ -7,6 +7,7 @@ import by.asport.webdriver.WebDriver;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.List;
@@ -39,14 +40,13 @@ public class SearchPageTest extends BaseLogger {
     @ParameterizedTest
     @DisplayName("Checking if the list of the results contains \"палатка\"")
     @ValueSource(strings = {"палатка", "палатка", "палатк", "палат", "пала",})
-    public void test2() {
+    public void test2(String searchKey) {
         SearchPage searchPage = new SearchPage();
-        searchPage.sendKeysToSearch("палатка");
+        searchPage.sendKeysToSearch(searchKey);
         searchPage.startSearch();
         WebDriver.pauseSeconds(5);
 
         List<String> searchResults = searchPage.getSearchResultItemsTitleText();
-        System.out.println(searchResults.size());
 
         assertThat(searchResults)
                 .as("The list of searches should not be empty")
@@ -64,19 +64,31 @@ public class SearchPageTest extends BaseLogger {
     }
 
     @ParameterizedTest
-    @DisplayName("Checking if the list of the results never empty")
-    @ValueSource(strings = {"", "па", "12", "@#$%"})
-    public void test3() {
+    @DisplayName("Checking searching small and empty key")
+    @EmptySource
+    @ValueSource(strings = {"", "\t", "\n", "па", "12"})
+    public void test3(String searchKey) {
         SearchPage searchPage = new SearchPage();
-        searchPage.sendKeysToSearch("палатка");
+        searchPage.sendKeysToSearch(searchKey);
         searchPage.startSearch();
         WebDriver.pauseSeconds(5);
 
         List<String> searchResults = searchPage.getSearchResultItemsTitleText();
-        System.out.println(searchResults.size());
 
         assertThat(searchResults)
                 .as("The list of searches should not be empty")
                 .isNotEmpty();
+    }
+
+    @ParameterizedTest
+    @DisplayName("Checking invalid search key")
+    @ValueSource(strings = {"kjhgfgcfhgvjh", "@$%"})
+    public void test4(String searchKey) {
+        SearchPage searchPage = new SearchPage();
+        searchPage.sendKeysToSearch(searchKey);
+        searchPage.startSearch();
+        WebDriver.pauseSeconds(5);
+
+        Assertions.assertEquals("Не найдено ни одного товара по запросу " + searchKey, searchPage.getNotFoundTitle().trim());
     }
 }
