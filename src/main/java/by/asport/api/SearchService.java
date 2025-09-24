@@ -1,11 +1,8 @@
 package by.asport.api;
 
-import io.restassured.RestAssured;
 import io.restassured.builder.MultiPartSpecBuilder;
-import io.restassured.config.EncoderConfig;
-import io.restassured.filter.cookie.CookieFilter;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import io.restassured.specification.MultiPartSpecification;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -13,10 +10,10 @@ import org.jsoup.select.Elements;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
 
@@ -25,56 +22,53 @@ public class SearchService {
     private static final String FIND_PATH = "/find";
     private static final String EXTENDED_PATH = "/template/find/extended";
     private static final String CSS_PRODUCT_TITLE = "div.ok-product__main [itemprop=name], span[itemprop=name]";
+    private String xsrfToken;
 
-    private final CookieFilter cookieFilter = new CookieFilter();
     private Response resp;
 
-    String xsrf;
+    public void getToken(String search) {
+        Response responseWithToken =
+                given()
+                        .headers("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7")
+                        .when()
+                        .get(BASE_URI + FIND_PATH + "?findtext=" + URLEncoder.encode(search, StandardCharsets.UTF_8))
+                        .then()
+                        .extract()
+                        .response();
 
-    private Map<String, String> createHeadersForExtendedRequest() {
+        xsrfToken = URLDecoder.decode(responseWithToken.getCookie("XSRF-TOKEN"), StandardCharsets.UTF_8);
+    }
+
+    public Map<String, String> createHeadersForExtendedRequest(String search) {
+        if (xsrfToken == null) {
+            getToken(search);
+        }
         Map<String, String> headersExtended = new HashMap<>();
-        headersExtended.put("Accept", "application/json, text/plain, */*");
-        headersExtended.put("Origin", BASE_URI);
-        headersExtended.put("Referer", BASE_URI + FIND_PATH + "/");
-        headersExtended.put("X-XSRF-TOKEN", xsrf);
+        headersExtended.put("accept", "application/json, text/plain, */*");
+        headersExtended.put("X-XSRF-TOKEN", xsrfToken);
 
         return headersExtended;
     }
 
-    public void search(String query) {
-        Response bootstrap = given()
-                .baseUri(BASE_URI)
-                .filter(cookieFilter)
-                .when()
-                .get(FIND_PATH + "?findtext=" + URLEncoder.encode(query, StandardCharsets.UTF_8))
-                .then()
-                .extract()
-                .response();
+    public List<MultiPartSpecification> createBody(String searchKey) {
+        List<MultiPartSpecification> body = new ArrayList<>();
+        body.add(new MultiPartSpecBuilder("").controlName("sort").charset("UTF-8").build());
+        body.add(new MultiPartSpecBuilder(String.valueOf(1)).controlName("page_num").charset("UTF-8").build());
+        body.add(new MultiPartSpecBuilder(searchKey).controlName("findtext").mimeType("text/plain").charset("UTF-8").build());
+        body.add(new MultiPartSpecBuilder("utf-8").controlName("charset").charset("UTF-8").build());
+        body.add(new MultiPartSpecBuilder("1").controlName("item_status").charset("UTF-8").build());
+        return body;
+    }
 
-        xsrf = Optional.ofNullable(bootstrap.getCookie("XSRF-TOKEN"))
-                .map(c -> URLDecoder.decode(c, StandardCharsets.UTF_8))
-                .orElse("");
 
-        EncoderConfig enc = EncoderConfig.encoderConfig()
-                .appendDefaultContentCharsetToContentTypeIfUndefined(true)
-                .defaultContentCharset(StandardCharsets.UTF_8.name())
-                .encodeContentTypeAs("multipart/form-data", ContentType.MULTIPART);
+    public void searchRequest(String searchKey) {
 
         resp = given()
-                .config(RestAssured.config().encoderConfig(enc))
-                .baseUri(BASE_URI)
-                .basePath(EXTENDED_PATH)
-                .filter(cookieFilter)
-                .contentType("multipart/form-data; charset=UTF-8")
-                .headers(createHeadersForExtendedRequest())
-                .multiPart(new MultiPartSpecBuilder("").controlName("sort").charset("UTF-8").build())
-                .multiPart(new MultiPartSpecBuilder("1").controlName("page_num").charset("UTF-8").build())
-                .multiPart(new MultiPartSpecBuilder(query).controlName("findtext").mimeType("text/plain").charset("UTF-8").build())
-                .multiPart(new MultiPartSpecBuilder("utf-8").controlName("charset").charset("UTF-8").build())
-                .multiPart(new MultiPartSpecBuilder("1").controlName("item_status").charset("UTF-8").build())
-                .when()
-                .post()
-                .then()
+                .headers(createHeadersForExtendedRequest(searchKey))
+                .body(createBody(searchKey))
+            .when()
+                .post(BASE_URI + EXTENDED_PATH)
+            .then()
                 .extract()
                 .response();
     }
@@ -87,7 +81,6 @@ public class SearchService {
         String html = resp.jsonPath().getString("content");
         if (html == null) return List.of();
         Document doc = Jsoup.parse(html);
-        // селектор шире на случай разных версток
         Elements els = doc.select(CSS_PRODUCT_TITLE);
         return els.stream()
                 .map(e -> e.text().trim().toLowerCase())

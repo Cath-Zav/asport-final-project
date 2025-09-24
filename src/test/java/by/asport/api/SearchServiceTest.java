@@ -5,9 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
-import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-
 
 import java.util.List;
 
@@ -21,7 +19,7 @@ public class SearchServiceTest extends BaseLogger {
     void test1() {
         String search = "рюкзак";
         SearchService searchService = new SearchService();
-        searchService.search(search);
+        searchService.searchRequest(search);
 
         List<String> titles = searchService.getProductTitles();
         logger.info("Статус код: {}. Всего результатов: {}", searchService.getResponseStatusCode(), titles.size());
@@ -40,7 +38,7 @@ public class SearchServiceTest extends BaseLogger {
     void test2() {
         String searchService = "123";
         SearchService service = new SearchService();
-        service.search(searchService);
+        service.searchRequest(searchService);
 
         List<String> titles = service.getProductTitles();
         logger.info("Статус код: {}. Всего результатов: {}", service.getResponseStatusCode(), titles.size());
@@ -59,7 +57,7 @@ public class SearchServiceTest extends BaseLogger {
     @ValueSource(strings = {"123@#$%^&*", ""})
     void test3(String search) {
         SearchService searchService = new SearchService();
-        searchService.search(search);
+        searchService.searchRequest(search);
 
         List<String> titles = searchService.getProductTitles();
         logger.info("Всего результатов: {}", titles.size());
@@ -73,7 +71,7 @@ public class SearchServiceTest extends BaseLogger {
     @EmptySource
     void test4(String search) {
         SearchService searchService = new SearchService();
-        searchService.search(search);
+        searchService.searchRequest(search);
 
         List<String> titles = searchService.getProductTitles();
         logger.info("Всего результатов: {}", titles.size());
