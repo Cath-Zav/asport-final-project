@@ -64,7 +64,7 @@ public class SearchPageTest extends BaseLogger {
     }
 
     @ParameterizedTest
-    @DisplayName("Checking searching small and empty key")
+    @DisplayName("Checking searching small and empty key - the search result page is not empty")
     @EmptySource
     @ValueSource(strings = {"", "\t", "\n", "па", "12"})
     public void test3(String searchKey) {

@@ -1,10 +1,10 @@
 package by.asport.api;
 
 import by.asport.logger.BaseLogger;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.List;
@@ -68,15 +68,14 @@ public class SearchServiceTest extends BaseLogger {
 
     @DisplayName("Status code is 200 when sending null")
     @ParameterizedTest
-    @EmptySource
-    void test4(String search) {
+    @ValueSource(strings = {"rdfghjj", "@"})
+    void test4(String searchKey) {
         SearchService searchService = new SearchService();
-        searchService.searchRequest(search);
+        searchService.searchRequest(searchKey);
 
         List<String> titles = searchService.getProductTitles();
-        logger.info("Всего результатов: {}", titles.size());
-        titles.forEach(names -> logger.info("✔ {}", names));
+        logger.info("Checking invalid search request");
 
-        assertEquals(200, searchService.getResponseStatusCode());
+        Assertions.assertEquals("Не найдено ни одного товара по запросу", searchService.getNotFoundMessage());
     }
 }

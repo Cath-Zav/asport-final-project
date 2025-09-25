@@ -3,17 +3,17 @@ package by.asport.api;
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.response.Response;
 import io.restassured.specification.MultiPartSpecification;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static io.restassured.RestAssured.given;
 
@@ -50,25 +50,29 @@ public class SearchService {
         return headersExtended;
     }
 
-    public List<MultiPartSpecification> createBody(String searchKey) {
-        List<MultiPartSpecification> body = new ArrayList<>();
-        body.add(new MultiPartSpecBuilder("").controlName("sort").charset("UTF-8").build());
-        body.add(new MultiPartSpecBuilder(String.valueOf(1)).controlName("page_num").charset("UTF-8").build());
-        body.add(new MultiPartSpecBuilder(searchKey).controlName("findtext").mimeType("text/plain").charset("UTF-8").build());
-        body.add(new MultiPartSpecBuilder("utf-8").controlName("charset").charset("UTF-8").build());
-        body.add(new MultiPartSpecBuilder("1").controlName("item_status").charset("UTF-8").build());
-        return body;
-    }
+//    public List<MultiPartSpecification> createBody(String searchKey) {
+//        List<MultiPartSpecification> body = new ArrayList<>();
+//        body.add(new MultiPartSpecBuilder("").controlName("sort").charset("UTF-8").build());
+//        body.add(new MultiPartSpecBuilder(String.valueOf(1)).controlName("page_num").charset("UTF-8").build());
+//        body.add(new MultiPartSpecBuilder(searchKey).controlName("findtext").mimeType("text/plain").charset("UTF-8").build());
+//        body.add(new MultiPartSpecBuilder("utf-8").controlName("charset").charset("UTF-8").build());
+//        body.add(new MultiPartSpecBuilder("1").controlName("item_status").charset("UTF-8").build());
+//        return body;
+//    }
 
 
     public void searchRequest(String searchKey) {
 
         resp = given()
                 .headers(createHeadersForExtendedRequest(searchKey))
-                .body(createBody(searchKey))
-            .when()
+                .multiPart("findtext", searchKey)
+                .multiPart("page_num", "1")
+                .multiPart("sort", "")
+                .multiPart("charset", "utf-8")
+                .multiPart("item_status", "1")
+                .when()
                 .post(BASE_URI + EXTENDED_PATH)
-            .then()
+                .then()
                 .extract()
                 .response();
     }
@@ -85,5 +89,16 @@ public class SearchService {
         return els.stream()
                 .map(e -> e.text().trim().toLowerCase())
                 .toList();
+    }
+
+    public String getNotFoundMessage() {
+        String html = resp.jsonPath().getString("content");
+        Document doc = Jsoup.parse(html);
+        Element notFoundText = doc.selectFirst("p.h3");
+        if (notFoundText == null) {
+            throw new NoSuchElementException("notFoundText is missing");
+        } else {
+            return notFoundText.ownText().trim();
+        }
     }
 }
