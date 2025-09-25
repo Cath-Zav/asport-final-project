@@ -1,7 +1,6 @@
 package by.asport.api;
 
 import by.asport.logger.BaseLogger;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class SearchServiceTest extends BaseLogger {
 
     @Test
-    @DisplayName("Valid search - results contains \"рюкзак\"")
+    @DisplayName("Valid search - all results contains \"рюкзак\"")
     void test1() {
         String search = "рюкзак";
         SearchService searchService = new SearchService();
@@ -34,21 +33,17 @@ public class SearchServiceTest extends BaseLogger {
     }
 
     @Test
-    @DisplayName("Valid search - results contains \"123\"")
+    @DisplayName("Valid search - all results contains more detailed item description \"Велоперчатки Favorit 8510BK-S (обхват руки: 18-20 см)\"")
     void test2() {
-        String searchService = "123";
+        String searchService = "Велоперчатки Favorit 8510BK-S (обхват руки: 18-20 см)";
         SearchService service = new SearchService();
         service.searchRequest(searchService);
 
-        List<String> titles = service.getProductTitles();
-        logger.info("Статус код: {}. Всего результатов: {}", service.getResponseStatusCode(), titles.size());
-        titles.forEach(names -> logger.info("✔ {}", names));
+        logger.info("Статус код: {}. Результат: {}", service.getResponseStatusCode(), service.getProductTitle());
 
         assertAll(
                 () -> assertEquals(200, service.getResponseStatusCode()),
-                () -> assertTrue(
-                        titles.stream().allMatch(title -> title
-                                .contains(searchService)))
+                () -> assertEquals("Велоперчатки Favorit 8510BK-S (обхват руки: 18-20 см)", service.getProductTitle())
         );
     }
 
@@ -76,6 +71,8 @@ public class SearchServiceTest extends BaseLogger {
         List<String> titles = searchService.getProductTitles();
         logger.info("Checking invalid search request");
 
-        Assertions.assertEquals("Не найдено ни одного товара по запросу", searchService.getNotFoundMessage());
+        assertAll(
+                () -> assertEquals(200, searchService.getResponseStatusCode()),
+                () ->assertEquals("Не найдено ни одного товара по запросу", searchService.getNotFoundMessage()));
     }
 }

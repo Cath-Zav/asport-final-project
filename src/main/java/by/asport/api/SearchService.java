@@ -1,10 +1,6 @@
 package by.asport.api;
 
-import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.response.Response;
-import io.restassured.specification.MultiPartSpecification;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -50,17 +46,6 @@ public class SearchService {
         return headersExtended;
     }
 
-//    public List<MultiPartSpecification> createBody(String searchKey) {
-//        List<MultiPartSpecification> body = new ArrayList<>();
-//        body.add(new MultiPartSpecBuilder("").controlName("sort").charset("UTF-8").build());
-//        body.add(new MultiPartSpecBuilder(String.valueOf(1)).controlName("page_num").charset("UTF-8").build());
-//        body.add(new MultiPartSpecBuilder(searchKey).controlName("findtext").mimeType("text/plain").charset("UTF-8").build());
-//        body.add(new MultiPartSpecBuilder("utf-8").controlName("charset").charset("UTF-8").build());
-//        body.add(new MultiPartSpecBuilder("1").controlName("item_status").charset("UTF-8").build());
-//        return body;
-//    }
-
-
     public void searchRequest(String searchKey) {
 
         resp = given()
@@ -89,6 +74,13 @@ public class SearchService {
         return els.stream()
                 .map(e -> e.text().trim().toLowerCase())
                 .toList();
+    }
+
+    public String getProductTitle() {
+        String html = resp.jsonPath().getString("content");
+        Document doc = Jsoup.parse(html);
+        Elements els = doc.select(CSS_PRODUCT_TITLE);
+        return els.text();
     }
 
     public String getNotFoundMessage() {
