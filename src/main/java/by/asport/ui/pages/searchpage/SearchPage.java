@@ -3,15 +3,14 @@ package by.asport.ui.pages.searchpage;
 import by.asport.webdriver.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import java.sql.Driver;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SearchPage {
-    private final String INPUT_SEARCH = "//input[@class='ok-search-input -state-empty']";
-    private final String BUTTON_START_SEARCH = "//button[@class='ok-search__btn']";
-    private final String TITLE_SEARCH_RESULT = "//div[@class='product-name']//span[@itemprop='name']";
-    private final String TITLE_NOT_FOUND = "//div[@class='col-md-12 -ml-default -mr-default']/p[@class='h3']";
+    private static final String INPUT_SEARCH = "//input[@class='ok-search-input -state-empty']";
+    private static final String BUTTON_START_SEARCH = "//button[@class='ok-search__btn']";
+    private static final String TITLE_SEARCH_RESULT = "//div[@class='product-name']//span[@itemprop='name']";
+    private static final String TITLE_NOT_FOUND = "//div[@class='col-md-12 -ml-default -mr-default']/p[@class='h3']";
 
     public SearchPage() {
     }
