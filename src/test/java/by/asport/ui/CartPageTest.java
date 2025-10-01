@@ -1,21 +1,61 @@
 package by.asport.ui;
 
 import by.asport.logger.BaseLogger;
+import by.asport.ui.pages.cartpage.CartPage;
 import by.asport.ui.pages.homepage.HomePage;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import by.asport.ui.pages.searchpage.SearchPage;
+import by.asport.webdriver.WebDriver;
+import org.junit.jupiter.api.*;
 
 public class CartPageTest extends BaseLogger {
+    HomePage homePage;
+
     @BeforeEach
     public void openSite() {
-        HomePage homePage = new HomePage();
+        homePage = new HomePage();
         homePage.openSite();
     }
 
-    @Test
-    @DisplayName("Сart icon is displayed")
-    public void test1() {
-
+    @AfterEach
+    public void tearDown() {
+        WebDriver.quit();
     }
+
+    @Test
+    @DisplayName("The address in the address bar matches https://asport.by/shcart/.")
+    public void test1() {
+            homePage.addFirstProductToCart();
+            homePage.clickCartButton();
+            homePage.waitUntilOnCartPage();
+
+            CartPage cartPage = new CartPage();
+            Assertions.assertEquals("https://asport.by/shcart/", cartPage.getCurrentURL());
+            logger.info("Running UI CartTest, test1: The address in the address bar matches https://asport.by/shcart/");
+    }
+
+    @Test
+    @DisplayName("The title of the product table in the cart matches 'СПИСОК ТОВАРОВ'")
+    public void test2() {
+        homePage.addFirstProductToCart();
+        homePage.clickCartButton();
+        homePage.waitUntilOnCartPage();
+
+        CartPage cartPage = new CartPage();
+        Assertions.assertEquals("СПИСОК ТОВАРОВ", cartPage.getCartProductTableTitle());
+        logger.info("Running UI CartTest, test2: The title of the product table in the cart matches 'СПИСОК ТОВАРОВ'");
+    }
+
+    @Test
+    @DisplayName("Find a specific product 'Палатка туристическая 3-х местная Relmax MERAN 3', add it to cart and check it's name in the cart")
+    public void test3() {
+        SearchPage searchPage = new SearchPage();
+        searchPage.sendKeysToSearch("Палатка туристическая 3-х местная Relmax MERAN 3");
+        searchPage.startSearch();
+        homePage.addFirstProductToCart();
+        homePage.clickCartButton();
+
+        Assertions.assertEquals("Палатка туристическая 3-х местная Relmax MERAN 3 (1000 mm)", searchPage.getSearchResultFirstItemTitleText());
+        logger.info("Find a specific product 'Палатка туристическая 3-х местная Relmax MERAN 3', add it to cart and check it's name in the cart");
+    }
+
 }
