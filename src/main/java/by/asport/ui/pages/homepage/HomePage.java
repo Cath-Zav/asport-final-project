@@ -1,6 +1,7 @@
 package by.asport.ui.pages.homepage;
 
 import by.asport.webdriver.WebDriver;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -22,6 +23,7 @@ public class HomePage {
     public HomePage() {
     }
 
+    @Step("Home page opened")
     public HomePage openSite() {
         WebDriver.getDriver().get(URL);
         return this;

@@ -1,6 +1,7 @@
 package by.asport.ui.pages.searchpage;
 
 import by.asport.webdriver.WebDriver;
+import io.qameta.allure.Step;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -23,22 +24,27 @@ public class SearchPage {
     public SearchPage() {
     }
 
+    @Step("Send keys to search")
     public void sendKeysToSearch(String search) {
         WebDriver.sendKeys(INPUT_SEARCH, search);
     }
 
+    @Step("Start search")
     public void startSearch() {
         WebDriver.clickElement(BUTTON_START_SEARCH);
     }
 
+    @Step("Get product title on the search result page")
     public String getSearchResultFirstItemTitleText() {
         return WebDriver.getTextFromElement(TITLE_SEARCH_RESULT);
     }
 
+    @Step("Get not found title")
     public String getNotFoundTitle() {
         return WebDriver.getTextFromElement(TITLE_NOT_FOUND);
     }
 
+    @Step("Get product title on the first result on the search result page")
     public List<String> getSearchResultItemsTitleText() {
         List<WebElement> listOfSearchResultElements = WebDriver.findElements(TITLE_SEARCH_RESULT);
         List<String> listOfSearchResultTitles = new ArrayList<>();
@@ -49,6 +55,7 @@ public class SearchPage {
         return listOfSearchResultTitles;
     }
 
+    @Step("Add first product to the cart")
     public void addFirstProductToCart() {
         WebElement cardToHover = WebDriver.findElementByPath(PRODUCT_CARD);
         Actions action = new Actions(WebDriver.getDriver());
@@ -57,6 +64,7 @@ public class SearchPage {
         WebDriver.getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
     }
 
+    @Step("Click cart button")
     public void clickCartButton() {
             WebDriverWait wait = new WebDriverWait(WebDriver.getDriver(), Duration.ofSeconds(10));
 
