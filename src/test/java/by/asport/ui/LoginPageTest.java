@@ -33,6 +33,7 @@ public class LoginPageTest extends BaseLogger {
     public void test2() {
         LoginPage loginPage = new LoginPage();
         loginPage.fillLoginForm(loginPage.getValidEmail(), loginPage.getValidPassword());
+        WebDriver.pauseSeconds(5);
         Assertions.assertEquals(loginPage.getValidEmail(), loginPage.getLoginFormTitle());
         logger.info("Checking UI: login with valid email and password");
     }

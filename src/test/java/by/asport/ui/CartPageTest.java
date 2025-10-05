@@ -7,6 +7,9 @@ import by.asport.ui.pages.searchpage.SearchPage;
 import by.asport.webdriver.WebDriver;
 import org.junit.jupiter.api.*;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class CartPageTest extends BaseLogger {
     HomePage homePage;
 
@@ -26,7 +29,6 @@ public class CartPageTest extends BaseLogger {
     public void test1() {
             homePage.addFirstProductToCart();
             homePage.clickCartButton();
-            homePage.waitUntilOnCartPage();
 
             CartPage cartPage = new CartPage();
             Assertions.assertEquals("https://asport.by/shcart/", cartPage.getCurrentURL());
@@ -38,7 +40,6 @@ public class CartPageTest extends BaseLogger {
     public void test2() {
         homePage.addFirstProductToCart();
         homePage.clickCartButton();
-        homePage.waitUntilOnCartPage();
 
         CartPage cartPage = new CartPage();
         Assertions.assertEquals("СПИСОК ТОВАРОВ", cartPage.getCartProductTableTitle());
@@ -51,11 +52,30 @@ public class CartPageTest extends BaseLogger {
         SearchPage searchPage = new SearchPage();
         searchPage.sendKeysToSearch("Палатка туристическая 3-х местная Relmax MERAN 3");
         searchPage.startSearch();
-        homePage.addFirstProductToCart();
-        homePage.clickCartButton();
+        searchPage.addFirstProductToCart();
+        searchPage.clickCartButton();
+        CartPage cartPage = new CartPage();
 
-        Assertions.assertEquals("Палатка туристическая 3-х местная Relmax MERAN 3 (1000 mm)", searchPage.getSearchResultFirstItemTitleText());
+        Assertions.assertEquals("Палатка туристическая 3-х местная Relmax MERAN 3 (1000 mm)", cartPage.getFirstProductTitle());
         logger.info("Find a specific product 'Палатка туристическая 3-х местная Relmax MERAN 3', add it to cart and check it's name in the cart");
     }
 
+    @Test
+    @DisplayName("Find a specific product 'Снегокат НИКА Snowpatrol СНД2/Г голубой каркас', add it to cart, increase it's number and check quantity and sum")
+    public void test4() {
+        SearchPage searchPage = new SearchPage();
+        searchPage.sendKeysToSearch("Снегокат НИКА Snowpatrol СНД2/Г голубой каркас");
+        searchPage.startSearch();
+        searchPage.addFirstProductToCart();
+        searchPage.clickCartButton();
+        CartPage cartPage = new CartPage();
+        cartPage.clickIncreaseProductButton();
+
+        assertAll(
+                () -> assertEquals("2", cartPage.getNumberOfProducts()),
+                () -> assertEquals("386,00", cartPage.getTotalSum())
+        );
+
+        logger.info("Find a specific product 'Снегокат НИКА Snowpatrol СНД2/Г голубой каркас', add it to cart, increase it's number and check quantity and sum");
+    }
 }
