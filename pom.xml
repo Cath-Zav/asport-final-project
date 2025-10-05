@@ -7,85 +7,153 @@
     <groupId>org.example</groupId>
     <artifactId>asport-final-project</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <name>asport-final-project</name>
+    <description>UI/API tests with JUnit 5 + Allure</description>
+    <packaging>jar</packaging>
 
     <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <!-- Java / encoding -->
+        <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Managed stacks -->
+        <allure.version>2.29.0</allure.version>
+        <junit.version>5.11.3</junit.version>
+
+        <!-- Direct deps -->
+        <selenium.version>4.35.0</selenium.version>
+        <restassured.version>5.5.6</restassured.version>
+        <assertj.version>4.0.0-M1</assertj.version>
+        <jsoup.version>1.21.2</jsoup.version>
         <log4j.version>2.25.1</log4j.version>
-        <allure.version>2.30.0</allure.version>
         <aspectj.version>1.9.24</aspectj.version>
+
+        <!-- опционально, чтобы Jenkins -DexcludedGroups=ci-skip действительно применялся -->
+        <excludedGroups></excludedGroups>
     </properties>
 
+    <!-- Управляем версии через BOM'ы, чтобы не перетягивать несовместимые артефакты -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-bom</artifactId>
+                <version>${allure.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
+        <!-- JUnit 5 (API + Engine + Params) -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>5.13.4</version>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
         </dependency>
 
+        <!-- Allure JUnit 5 интеграция -->
         <dependency>
-            <groupId>io.rest-assured</groupId>
-            <artifactId>rest-assured</artifactId>
-            <version>5.5.6</version>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-junit5</artifactId>
+            <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
-            <version>5.11.0</version>
-        </dependency>
-
+        <!-- Selenium -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>4.35.0</version>
+            <version>${selenium.version}</version>
         </dependency>
 
+        <!-- Rest-Assured -->
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>${restassured.version}</version>
+        </dependency>
+
+        <!-- AssertJ -->
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>4.0.0-M1</version>
+            <version>${assertj.version}</version>
         </dependency>
 
+        <!-- Jsoup -->
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>${log4j.version}</version>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>${jsoup.version}</version>
         </dependency>
 
+        <!-- Log4j2 (ядро) -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>${log4j.version}</version>
         </dependency>
 
+        <!-- SLF4J→Log4j2 привязка (в тестах, чтобы не было SLF4J WARN) -->
         <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>1.21.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.qameta.allure</groupId>
-            <artifactId>allure-junit5</artifactId>
-            <version>2.30.0</version>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j2-impl</artifactId>
+            <version>${log4j.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <!-- Компилятор -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <release>${maven.compiler.release}</release>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+
+            <!-- Запуск тестов -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.2</version>
                 <configuration>
-                    <testFailureIgnore>false</testFailureIgnore>
+                    <!-- чтобы JUnit Platform корректно работал на Java 21 в обычном проекте -->
+                    <useModulePath>false</useModulePath>
+
+                    <!-- где складывать результаты для Allure -->
+                    <systemPropertyVariables>
+                        <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
+                    </systemPropertyVariables>
+
+                    <!-- паттерны тестов -->
+                    <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/*Tests.java</include>
+                    </includes>
+
+                    <!-- группы, которые исключаем из Jenkins (прокидываются через -DexcludedGroups=...) -->
+                    <excludedGroups>${excludedGroups}</excludedGroups>
+
+                    <!-- кодировка + (опционально) агент AspectJ, если используешь @Step без ручных вызовов Allure.step -->
                     <argLine>
                         -Dfile.encoding=${project.build.sourceEncoding}
                         -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
                     </argLine>
                 </configuration>
+                <!-- сам weaver подсовываем в classpath плагина -->
                 <dependencies>
                     <dependency>
                         <groupId>org.aspectj</groupId>
@@ -95,6 +163,7 @@
                 </dependencies>
             </plugin>
 
+            <!-- Плагин Allure (для генерации отчёта через mvn allure:report, если нужно) -->
             <plugin>
                 <groupId>io.qameta.allure</groupId>
                 <artifactId>allure-maven</artifactId>
@@ -102,15 +171,6 @@
                 <configuration>
                     <reportVersion>${allure.version}</reportVersion>
                     <resultsDirectory>${project.build.directory}/allure-results</resultsDirectory>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
-                <configuration>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                    <release>21</release>
                 </configuration>
             </plugin>
         </plugins>
