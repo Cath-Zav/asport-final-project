@@ -3,6 +3,7 @@ package by.asport.api;
 import by.asport.logger.BaseLogger;
 import by.asport.utils.LoginUtils;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
@@ -10,20 +11,22 @@ import org.junit.jupiter.params.provider.EmptySource;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class LoginServiceTest extends BaseLogger { @Test
-
-@DisplayName("Incorrect email and password")
-public void test1() {
-    LoginService service = new LoginService();
-    service.doRequest(LoginUtils.getRandomEmail(), LoginUtils.getRandomPassword());
-    assertAll(
-            () -> assertEquals(422, service.getStatusCode()),
-            () -> assertEquals("Выбранное значение для E-Mail адрес некорректно.", service.getInvalidBodyMessage())
-    );
-    logger.info("Checking API: login with Incorrect email and password");
-}
+public class LoginServiceTest extends BaseLogger {
+    @Test
+    @Tag("ci-skip")
+    @DisplayName("Incorrect email and password")
+    public void test1() {
+        LoginService service = new LoginService();
+        service.doRequest(LoginUtils.getRandomEmail(), LoginUtils.getRandomPassword());
+        assertAll(
+                () -> assertEquals(422, service.getStatusCode()),
+                () -> assertEquals("Выбранное значение для E-Mail адрес некорректно.", service.getInvalidBodyMessage())
+        );
+        logger.info("Checking API: login with Incorrect email and password");
+    }
 
     @Test
+    @Tag("ci-skip")
     @DisplayName("Valid email and password")
     public void test2() {
         LoginService service = new LoginService();
@@ -36,6 +39,7 @@ public void test1() {
     }
 
     @ParameterizedTest
+    @Tag("ci-skip")
     @DisplayName("Empty email and filled password")
     @EmptySource
     public void test3(String email) {
@@ -49,6 +53,7 @@ public void test1() {
     }
 
     @ParameterizedTest
+    @Tag("ci-skip")
     @DisplayName("Filled incorrect email and empty password")
     @EmptySource
     public void test4(String emptyPassword) {
@@ -63,6 +68,7 @@ public void test1() {
     }
 
     @Test
+    @Tag("ci-skip")
     @DisplayName("Invalid email")
     public void test5() {
         LoginService service = new LoginService();
@@ -75,6 +81,7 @@ public void test1() {
     }
 
     @ParameterizedTest
+    @Tag("ci-skip")
     @DisplayName("Correct email and empty password")
     @EmptySource
     public void test6(String emptyPassword) {

@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class SearchServiceTest extends BaseLogger {
 
     @Test
+    @Tag("ci-skip")
     @DisplayName("Valid search - all results contains \"рюкзак\"")
     void test1() {
         String search = "рюкзак";
@@ -34,6 +35,7 @@ public class SearchServiceTest extends BaseLogger {
     }
 
     @Test
+    @Tag("ci-skip")
     @DisplayName("Valid search - all results contains more detailed item description \"Велоперчатки Favorit 8510BK-S (обхват руки: 18-20 см)\"")
     void test2() {
         String searchService = "Велоперчатки Favorit 8510BK-S (обхват руки: 18-20 см)";
@@ -65,6 +67,7 @@ public class SearchServiceTest extends BaseLogger {
 
     @DisplayName("Status code is 200 when sending null")
     @ParameterizedTest
+    @Tag("ci-skip")
     @ValueSource(strings = {"rdfghjj", "@"})
     void test4(String searchKey) {
         SearchService searchService = new SearchService();

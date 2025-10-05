@@ -75,6 +75,6 @@ public class SearchPage {
                 new org.openqa.selenium.interactions.Actions(WebDriver.getDriver()).sendKeys(org.openqa.selenium.Keys.ESCAPE).perform();
                 ((org.openqa.selenium.JavascriptExecutor) WebDriver.getDriver()).executeScript("arguments[0].click();", buttonCartElement);
             }
-            wait.until(ExpectedConditions.urlContains("/shcart"));
+            wait.until(ExpectedConditions.urlToBe(CART_URL));
     }
 }

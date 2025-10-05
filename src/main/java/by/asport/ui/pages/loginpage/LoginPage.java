@@ -64,6 +64,7 @@ public class LoginPage {
 
     public String getRestoreButtonText() {
         WebDriver.clickElement(BUTTON_GO_TO_RESTORE_PASSWORD);
+        wait.until(ExpectedConditions.visibilityOf(WebDriver.findElementByPath(BUTTON_RESTORE_PASSWORD)));
         return WebDriver.getTextFromElement(BUTTON_RESTORE_PASSWORD);
     }
 }
