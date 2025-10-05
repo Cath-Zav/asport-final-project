@@ -11,9 +11,9 @@ import org.junit.jupiter.params.provider.EmptySource;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Tag("ci-skip")
 public class LoginServiceTest extends BaseLogger {
     @Test
-    @Tag("ci-skip")
     @DisplayName("Incorrect email and password")
     public void test1() {
         LoginService service = new LoginService();
@@ -26,7 +26,6 @@ public class LoginServiceTest extends BaseLogger {
     }
 
     @Test
-    @Tag("ci-skip")
     @DisplayName("Valid email and password")
     public void test2() {
         LoginService service = new LoginService();
@@ -39,7 +38,6 @@ public class LoginServiceTest extends BaseLogger {
     }
 
     @ParameterizedTest
-    @Tag("ci-skip")
     @DisplayName("Empty email and filled password")
     @EmptySource
     public void test3(String email) {
@@ -53,7 +51,6 @@ public class LoginServiceTest extends BaseLogger {
     }
 
     @ParameterizedTest
-    @Tag("ci-skip")
     @DisplayName("Filled incorrect email and empty password")
     @EmptySource
     public void test4(String emptyPassword) {
@@ -68,7 +65,6 @@ public class LoginServiceTest extends BaseLogger {
     }
 
     @Test
-    @Tag("ci-skip")
     @DisplayName("Invalid email")
     public void test5() {
         LoginService service = new LoginService();
@@ -81,7 +77,6 @@ public class LoginServiceTest extends BaseLogger {
     }
 
     @ParameterizedTest
-    @Tag("ci-skip")
     @DisplayName("Correct email and empty password")
     @EmptySource
     public void test6(String emptyPassword) {
