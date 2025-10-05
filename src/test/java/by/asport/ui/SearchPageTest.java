@@ -32,7 +32,6 @@ public class SearchPageTest extends BaseLogger {
         SearchPage searchPage = new SearchPage();
         searchPage.sendKeysToSearch("Палатка туристическая 3-х местная Tramp Lite Tourist 3 Sand (V2) (4000 mm)");
         searchPage.startSearch();
-        WebDriver.pauseSeconds(5);
 
         Assertions.assertEquals("Палатка туристическая 3-х местная Tramp Lite Tourist 3 Sand (V2) (4000 mm)", searchPage.getSearchResultFirstItemTitleText());
     }
@@ -44,7 +43,6 @@ public class SearchPageTest extends BaseLogger {
         SearchPage searchPage = new SearchPage();
         searchPage.sendKeysToSearch(searchKey);
         searchPage.startSearch();
-        WebDriver.pauseSeconds(5);
 
         List<String> searchResults = searchPage.getSearchResultItemsTitleText();
 
@@ -71,7 +69,6 @@ public class SearchPageTest extends BaseLogger {
         SearchPage searchPage = new SearchPage();
         searchPage.sendKeysToSearch(searchKey);
         searchPage.startSearch();
-        WebDriver.pauseSeconds(5);
 
         List<String> searchResults = searchPage.getSearchResultItemsTitleText();
 
@@ -87,7 +84,6 @@ public class SearchPageTest extends BaseLogger {
         SearchPage searchPage = new SearchPage();
         searchPage.sendKeysToSearch(searchKey);
         searchPage.startSearch();
-        WebDriver.pauseSeconds(5);
 
         Assertions.assertEquals("Не найдено ни одного товара по запросу " + searchKey, searchPage.getNotFoundTitle().trim());
     }

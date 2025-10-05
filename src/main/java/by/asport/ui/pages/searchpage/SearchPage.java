@@ -2,7 +2,11 @@ package by.asport.ui.pages.searchpage;
 
 import by.asport.webdriver.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +15,10 @@ public class SearchPage {
     private static final String BUTTON_START_SEARCH = "//button[@class='ok-search__btn']";
     private static final String TITLE_SEARCH_RESULT = "//div[@class='product-name']//span[@itemprop='name']";
     private static final String TITLE_NOT_FOUND = "//div[@class='col-md-12 -ml-default -mr-default']/p[@class='h3']";
+    private static final String BUTTON_CART = "//button[@class='ok-shcart__btn ok-shcart__ico']";
+    private static final String BUTTON_ADD_TO_CART = "//div[@data-gtm-id='add-to-cart-listing']";
+    private static final String PRODUCT_CARD = "//div[@class='ok-product__main ']";
+    private static final String CART_URL = "https://asport.by/shcart/";
 
     public SearchPage() {
     }
@@ -39,5 +47,34 @@ public class SearchPage {
             listOfSearchResultTitles.add(element.getText().toLowerCase());
         }
         return listOfSearchResultTitles;
+    }
+
+    public void addFirstProductToCart() {
+        WebElement cardToHover = WebDriver.findElementByPath(PRODUCT_CARD);
+        Actions action = new Actions(WebDriver.getDriver());
+        action.moveToElement(cardToHover).perform();
+        WebDriver.clickElement(BUTTON_ADD_TO_CART);
+        WebDriver.getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+    }
+
+    public void clickCartButton() {
+            WebDriverWait wait = new WebDriverWait(WebDriver.getDriver(), Duration.ofSeconds(10));
+
+            WebElement buttonCartElement = wait.until(ExpectedConditions.elementToBeClickable(WebDriver.findElementByPath(BUTTON_CART)));
+
+            ((org.openqa.selenium.JavascriptExecutor) WebDriver.getDriver())
+                    .executeScript("arguments[0].scrollIntoView({block:'center', inline:'center'});", buttonCartElement);
+            new org.openqa.selenium.interactions.Actions(WebDriver.getDriver())
+                    .moveToElement(buttonCartElement)
+                    .pause(Duration.ofMillis(150))
+                    .perform();
+
+            try {
+                buttonCartElement.click();
+            } catch (org.openqa.selenium.ElementClickInterceptedException e) {
+                new org.openqa.selenium.interactions.Actions(WebDriver.getDriver()).sendKeys(org.openqa.selenium.Keys.ESCAPE).perform();
+                ((org.openqa.selenium.JavascriptExecutor) WebDriver.getDriver()).executeScript("arguments[0].click();", buttonCartElement);
+            }
+            wait.until(ExpectedConditions.urlContains("/shcart"));
     }
 }

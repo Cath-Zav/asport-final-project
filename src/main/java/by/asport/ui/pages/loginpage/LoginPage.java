@@ -1,6 +1,11 @@
 package by.asport.ui.pages.loginpage;
 
 import by.asport.webdriver.WebDriver;
+import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 public class LoginPage {
     private static final String LOGIN_FORM_TITLE = "//div[contains(@class,'ok-auth')]//span[@data-auth-info and contains(@class,'ok-auth__info')]";
@@ -13,6 +18,8 @@ public class LoginPage {
     private static final String PASSWORD_ERROR = "//span[@class='input-group has-error']";
     private static final String BUTTON_GO_TO_RESTORE_PASSWORD = "//a[@class='ok-enter__restore-href']";
     private static final String BUTTON_RESTORE_PASSWORD = "//form[@onsubmit='restore(this); return false']//button[@class='ok-btn -btn-theme-action -width-full']";
+
+    private static final WebDriverWait wait = new WebDriverWait(WebDriver.getDriver(), Duration.ofSeconds(8));
 
     public LoginPage() {
     }
@@ -49,7 +56,6 @@ public class LoginPage {
         sendKeyLogin(email);
         sendKeyPassword(password);
         WebDriver.clickElement(BUTTON_LOGIN);
-        WebDriver.pauseSeconds(5);
     }
 
     public boolean isInvalidField(String xpath) {
@@ -58,7 +64,6 @@ public class LoginPage {
 
     public String getRestoreButtonText() {
         WebDriver.clickElement(BUTTON_GO_TO_RESTORE_PASSWORD);
-        WebDriver.pauseSeconds(5);
         return WebDriver.getTextFromElement(BUTTON_RESTORE_PASSWORD);
     }
 }
