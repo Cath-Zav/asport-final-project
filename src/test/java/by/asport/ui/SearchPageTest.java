@@ -69,6 +69,7 @@ public class SearchPageTest extends BaseLogger {
         SearchPage searchPage = new SearchPage();
         searchPage.sendKeysToSearch(searchKey);
         searchPage.startSearch();
+        WebDriver.pauseSeconds(4);
 
         List<String> searchResults = searchPage.getSearchResultItemsTitleText();
 
