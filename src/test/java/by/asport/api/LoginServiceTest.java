@@ -68,7 +68,7 @@ public class LoginServiceTest extends BaseLogger {
     @DisplayName("Invalid email")
     public void test5() {
         LoginService service = new LoginService();
-        service.doRequest(LoginUtils.createRandomWord(), LoginUtils.getRandomPassword());
+        service.doRequest(LoginUtils.getRandomPassword(), LoginUtils.getRandomPassword());
         assertAll(
                 () -> assertEquals(422, service.getStatusCode()),
                 () -> assertEquals("Поле E-Mail адрес должно быть действительным электронным адресом.", service.getInvalidBodyMessage())
