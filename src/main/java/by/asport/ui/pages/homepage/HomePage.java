@@ -2,7 +2,6 @@ package by.asport.ui.pages.homepage;
 
 import by.asport.webdriver.WebDriver;
 import io.qameta.allure.Step;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -49,47 +48,24 @@ public class HomePage {
     }
 
     public void clickCartButton() {
-        var d = WebDriver.getDriver();
-        var wait = new WebDriverWait(d, Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(WebDriver.getDriver(), Duration.ofSeconds(10));
 
-        // 1) дождаться, что бокс корзины не disabled
-        By CART_BOX = By.cssSelector(".ok-shcart-box");
-        wait.until(driver -> {
-            WebElement box = driver.findElement(CART_BOX);
-            String cls = box.getAttribute("class");
-            return cls != null && !cls.contains("-state-disabled");
-        });
+        WebElement buttonCartElement = wait.until(ExpectedConditions.elementToBeClickable(WebDriver.findElementByPath(BUTTON_CART)));
 
-        // 2) цель клика: и <a>, и <button> (берём то, что есть на странице)
-        By CART_TARGET = By.xpath(
-                "//a[@href='/shcart/'] | //button[@data-url='/shcart/'] | //button[contains(@class,'ok-shcart__btn')]"
-        );
-
-        WebElement btn = wait.until(ExpectedConditions.elementToBeClickable(CART_TARGET));
-
-        // 3) скролл/ховер, чтобы убрать перехваты из-за позиционирования
-        ((org.openqa.selenium.JavascriptExecutor) d)
-                .executeScript("arguments[0].scrollIntoView({block:'center', inline:'center'});", btn);
-        new org.openqa.selenium.interactions.Actions(d)
-                .moveToElement(btn)
+        ((org.openqa.selenium.JavascriptExecutor) WebDriver.getDriver())
+                .executeScript("arguments[0].scrollIntoView({block:'center', inline:'center'});", buttonCartElement);
+        new org.openqa.selenium.interactions.Actions(WebDriver.getDriver())
+                .moveToElement(buttonCartElement)
                 .pause(Duration.ofMillis(150))
                 .perform();
 
-        // 4) клик + fallback, если что-то перехватило
         try {
-            btn.click();
+            buttonCartElement.click();
         } catch (org.openqa.selenium.ElementClickInterceptedException e) {
-            // нередко мешает cookie-баннер/модалка — пробуем ESC и JS-клик
-            new org.openqa.selenium.interactions.Actions(d).sendKeys(org.openqa.selenium.Keys.ESCAPE).perform();
-            ((org.openqa.selenium.JavascriptExecutor) d).executeScript("arguments[0].click();", btn);
+            new org.openqa.selenium.interactions.Actions(WebDriver.getDriver()).sendKeys(org.openqa.selenium.Keys.ESCAPE).perform();
+            ((org.openqa.selenium.JavascriptExecutor) WebDriver.getDriver()).executeScript("arguments[0].click();", buttonCartElement);
         }
-
-        // 5) подтверждение перехода
-        wait.until(ExpectedConditions.urlContains("/shcart"));
-//        WebElement buttonCard = WebDriver.findElementByPath(BUTTON_CART);
-//        Actions action = new Actions(WebDriver.getDriver());
-//        action.moveToElement(buttonCard).perform();
-//        WebDriver.clickElement(BUTTON_CART);
+        wait.until(ExpectedConditions.urlToBe(CART_URL));
     }
 
     public void waitUntilOnCartPage() {
