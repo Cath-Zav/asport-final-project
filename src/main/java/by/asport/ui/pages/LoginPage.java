@@ -1,8 +1,6 @@
-package by.asport.ui.pages.loginpage;
+package by.asport.ui.pages;
 
 import by.asport.webdriver.WebDriver;
-import io.qameta.allure.Step;
-import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
