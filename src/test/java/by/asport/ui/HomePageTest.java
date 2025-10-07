@@ -1,7 +1,7 @@
 package by.asport.ui;
 
 import by.asport.logger.BaseLogger;
-import by.asport.ui.pages.homepage.HomePage;
+import by.asport.ui.pages.HomePage;
 import by.asport.webdriver.WebDriver;
 import org.junit.jupiter.api.*;
 

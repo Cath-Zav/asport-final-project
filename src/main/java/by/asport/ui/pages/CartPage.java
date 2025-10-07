@@ -1,4 +1,4 @@
-package by.asport.ui.pages.cartpage;
+package by.asport.ui.pages;
 
 import by.asport.webdriver.WebDriver;
 import org.openqa.selenium.By;
