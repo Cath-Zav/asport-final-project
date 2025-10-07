@@ -66,6 +66,10 @@ public class SearchService {
         return resp.getStatusCode();
     }
 
+    public String getResponceBody() {
+        return resp.getBody().prettyPrint();
+    }
+
     public List<String> getProductTitles() {
         String html = resp.jsonPath().getString("content");
         if (html == null) return List.of();

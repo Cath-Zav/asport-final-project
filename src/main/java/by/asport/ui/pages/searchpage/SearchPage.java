@@ -85,4 +85,8 @@ public class SearchPage {
             }
             wait.until(ExpectedConditions.urlToBe(CART_URL));
     }
+
+    public void testClickCart() {
+        WebDriver.clickElement(BUTTON_CART);
+    }
 }

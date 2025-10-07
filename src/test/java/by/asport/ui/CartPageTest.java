@@ -53,7 +53,7 @@ public class CartPageTest extends BaseLogger {
         searchPage.sendKeysToSearch("Палатка туристическая 3-х местная Relmax MERAN 3");
         searchPage.startSearch();
         searchPage.addFirstProductToCart();
-        searchPage.clickCartButton();
+        searchPage.testClickCart();
         CartPage cartPage = new CartPage();
 
         Assertions.assertEquals("Палатка туристическая 3-х местная Relmax MERAN 3 (1000 mm)", cartPage.getFirstProductTitle());

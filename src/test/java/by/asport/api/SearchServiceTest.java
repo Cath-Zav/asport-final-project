@@ -12,7 +12,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Tag("ci-skip")
+
 public class SearchServiceTest extends BaseLogger {
 
     @Test
@@ -41,7 +41,7 @@ public class SearchServiceTest extends BaseLogger {
         SearchService service = new SearchService();
         service.searchRequest(searchService);
 
-        logger.info("Статус код: {}. Результат: {}", service.getResponseStatusCode(), service.getProductTitle());
+        logger.info("Статус код: {}. Результат: {}. Body: {}", service.getResponseStatusCode(), service.getProductTitle(), service.getResponceBody());
 
         assertAll(
                 () -> assertEquals(200, service.getResponseStatusCode()),
@@ -71,7 +71,7 @@ public class SearchServiceTest extends BaseLogger {
         searchService.searchRequest(searchKey);
 
         List<String> titles = searchService.getProductTitles();
-        logger.info("Checking invalid search request");
+        logger.info("Checking invalid search request. Статус код: {}, Body: {}", searchService.getResponseStatusCode(), searchService.getResponceBody());
 
         assertAll(
                 () -> assertEquals(200, searchService.getResponseStatusCode()),
