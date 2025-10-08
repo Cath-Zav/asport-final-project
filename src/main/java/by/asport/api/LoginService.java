@@ -8,11 +8,11 @@ import java.util.Map;
 import static io.restassured.RestAssured.given;
 
 public class LoginService {
-    private final String URL = "https://asport.by/user/auth?t=1758407389732";
-    private final String MALFORMED_BODY = "login=login&type=email_password&email=test%40gmail.com&password=password&_token=OwDl0h9DidSu59iVcv6TQBUhavRnPZuF9xPjvtbL";
+    private static final String BASE_URI = "https://asport.by";
+    private static final String AUTH_PATH = "/user/auth";
+    private static final String VALID_EMAIL = "cathzavizion%40gmail.com";
+    private static final String VALID_PASSWORD = "itAcademy2025%26";
     private final String BODY_TEMPLATE= "login=login&type=email_password&email=%s&password=%s";
-    private final String VALID_EMAIL = "cathzavizion%40gmail.com";
-    private final String VALID_PASSWORD = "itAcademy2025%26";
 
     private Response response;
 
@@ -22,10 +22,6 @@ public class LoginService {
 
     public String getValidPassword() {
         return VALID_PASSWORD;
-    }
-
-    public String createBody(String email, String password, String token) {
-        return String.format(BODY_TEMPLATE, email, password, token);
     }
 
     public String createBody(String email, String password) {
@@ -39,25 +35,11 @@ public class LoginService {
         return headers;
     }
 
-    public void doRequest(String email, String password, String token) {
-        response = given()
-                .headers(createHeaders())
-                .body(createBody(email, password, token))
-                .when().post(URL);
-    }
-
     public void doRequest(String email, String password) {
         response = given()
                 .headers(createHeaders())
                 .body(createBody(email, password))
-                .when().post(URL);
-    }
-
-    public void doRequest() {
-        response = given()
-                .headers(createHeaders())
-                .body(MALFORMED_BODY)
-                .when().post(URL);
+                .when().post(BASE_URI + AUTH_PATH);
     }
 
     public int getStatusCode() {

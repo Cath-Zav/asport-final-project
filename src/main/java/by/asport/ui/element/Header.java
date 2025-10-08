@@ -1,5 +1,6 @@
-package by.asport.ui.pages;
+package by.asport.ui.element;
 
+import by.asport.ui.pages.CartPage;
 import by.asport.webdriver.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
