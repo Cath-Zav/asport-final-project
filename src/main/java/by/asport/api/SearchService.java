@@ -13,8 +13,7 @@ import java.util.*;
 
 import static io.restassured.RestAssured.given;
 
-public class SearchService {
-    private static final String BASE_URI = "https://asport.by";
+public class SearchService extends BaseService{
     private static final String FIND_PATH = "/find";
     private static final String EXTENDED_PATH = "/template/find/extended";
     private static final String CSS_PRODUCT_TITLE = "div.ok-product__main [itemprop=name], span[itemprop=name]";
@@ -26,9 +25,9 @@ public class SearchService {
         Response responseWithToken =
                 given()
                         .headers("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7")
-                        .when()
+                .when()
                         .get(BASE_URI + FIND_PATH + "?findtext=" + URLEncoder.encode(search, StandardCharsets.UTF_8))
-                        .then()
+                .then()
                         .extract()
                         .response();
 

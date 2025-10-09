@@ -7,12 +7,11 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
-public class LoginService {
-    private static final String BASE_URI = "https://asport.by";
+public class LoginService extends BaseService {
     private static final String AUTH_PATH = "/user/auth";
     private static final String VALID_EMAIL = "cathzavizion%40gmail.com";
     private static final String VALID_PASSWORD = "itAcademy2025%26";
-    private final String BODY_TEMPLATE= "login=login&type=email_password&email=%s&password=%s";
+    private static final String BODY_TEMPLATE= "login=login&type=email_password&email=%s&password=%s";
 
     private Response response;
 
