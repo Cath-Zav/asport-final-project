@@ -1,5 +1,6 @@
 package by.asport.ui.pages;
 
+import by.asport.ui.element.Header;
 import by.asport.webdriver.WebDriver;
 import io.qameta.allure.Step;
 import org.openqa.selenium.WebElement;
@@ -8,12 +9,10 @@ import org.openqa.selenium.interactions.Actions;
 public class HomePage {
     private static final String URL = "https://asport.by/";
     private static final String LINK_PERSONAL_CABINET = "//div[@class='ok-auth']//span[@ class='ok-auth__info']";
-    private static final String BUTTON_CART = "//button[@class='ok-shcart__btn ok-shcart__ico']";
     private static final String CART_BUTTON_IS_DISABLED = "//div[@class='ok-shcart-box -state-disabled']";
     private static final String CART_BUTTON_IS_ENABLED = "//div[@class='ok-shcart-box']";
     private static final String PRODUCT_CARD = "//div[@class='ok-product ok-product--grid  ']";
     private static final String BUTTON_ADD_TO_CARD = "//div[@data-gtm-id='add-to-cart-listing']";
-    private static final String CART_URL = "https://asport.by/shcart/";
 
     private final Header header = new Header();
 
@@ -28,6 +27,7 @@ public class HomePage {
         return this;
     }
 
+    @Step("Click login")
     public void clickLogin() {
         WebDriver.clickElement(LINK_PERSONAL_CABINET);
     }
@@ -36,11 +36,20 @@ public class HomePage {
         return WebDriver.findElementByPath(CART_BUTTON_IS_DISABLED).isDisplayed();
     }
 
-    public void addFirstProductToCart() {
+    @Step("Add product to cart")
+    public void addFirstFoundProductToCart() {
         WebElement cardToHover = WebDriver.findElementByPath(PRODUCT_CARD);
         Actions action = new Actions(WebDriver.getDriver());
         action.moveToElement(cardToHover).perform();
         WebDriver.findElementByPath(BUTTON_ADD_TO_CARD).click();
+    }
+
+    @Step("Remove product from cart")
+    public void removeProductFromCart() {
+        WebElement cartIconToHover = WebDriver.findElementByPath("//button[@class='ok-shcart__btn ok-shcart__ico']");
+        Actions action = new Actions(WebDriver.getDriver());
+        action.moveToElement(cartIconToHover).perform();
+        WebDriver.findElementByPath("//a[@class='ok-shcart__close']").click();
     }
 
     public boolean isCartClickable() {

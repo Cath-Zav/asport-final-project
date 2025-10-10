@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.EmptySource;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Tag("ci-skip")
+//@Tag("ci-skip")
 public class LoginServiceTest extends BaseLogger {
     @Test
     @DisplayName("Incorrect email and password")

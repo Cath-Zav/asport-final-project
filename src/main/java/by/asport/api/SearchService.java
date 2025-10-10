@@ -1,5 +1,6 @@
 package by.asport.api;
 
+import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,8 +14,7 @@ import java.util.*;
 
 import static io.restassured.RestAssured.given;
 
-public class SearchService {
-    private static final String BASE_URI = "https://asport.by";
+public class SearchService extends BaseService{
     private static final String FIND_PATH = "/find";
     private static final String EXTENDED_PATH = "/template/find/extended";
     private static final String CSS_PRODUCT_TITLE = "div.ok-product__main [itemprop=name], span[itemprop=name]";
@@ -22,13 +22,14 @@ public class SearchService {
 
     private Response resp;
 
+    @Step("Get search token")
     public void getToken(String search) {
         Response responseWithToken =
                 given()
                         .headers("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7")
-                        .when()
+                .when()
                         .get(BASE_URI + FIND_PATH + "?findtext=" + URLEncoder.encode(search, StandardCharsets.UTF_8))
-                        .then()
+                .then()
                         .extract()
                         .response();
 
@@ -46,6 +47,7 @@ public class SearchService {
         return headersExtended;
     }
 
+    @Step("Do search request")
     public void searchRequest(String searchKey) {
 
         resp = given()
@@ -62,14 +64,17 @@ public class SearchService {
                 .response();
     }
 
+    @Step("Get response status code")
     public int getResponseStatusCode() {
         return resp.getStatusCode();
     }
 
+    @Step("Get response body")
     public String getResponceBody() {
         return resp.getBody().prettyPrint();
     }
 
+    @Step("Get product titles")
     public List<String> getProductTitles() {
         String html = resp.jsonPath().getString("content");
         if (html == null) return List.of();
@@ -80,6 +85,7 @@ public class SearchService {
                 .toList();
     }
 
+    @Step("Get product title")
     public String getProductTitle() {
         String html = resp.jsonPath().getString("content");
         Document doc = Jsoup.parse(html);
@@ -87,6 +93,7 @@ public class SearchService {
         return els.text();
     }
 
+    @Step("Get 'not found' message'")
     public String getNotFoundMessage() {
         String html = resp.jsonPath().getString("content");
         Document doc = Jsoup.parse(html);

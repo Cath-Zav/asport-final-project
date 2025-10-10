@@ -1,5 +1,6 @@
 package by.asport.ui.pages;
 
+import by.asport.ui.element.Header;
 import by.asport.webdriver.WebDriver;
 import io.qameta.allure.Step;
 import org.openqa.selenium.WebElement;
@@ -35,7 +36,7 @@ public class SearchPage {
     }
 
     @Step("Get product title on the search result page")
-    public String getSearchResultFirstItemTitleText() {
+    public String getSearchResultTitleText() {
         return WebDriver.getTextFromElement(TITLE_SEARCH_RESULT);
     }
 
@@ -45,7 +46,7 @@ public class SearchPage {
     }
 
     @Step("Get product title on the first result on the search result page")
-    public List<String> getSearchResultItemsTitleText() {
+    public List<String> getSearchResultsTitleText() {
         List<WebElement> listOfSearchResultElements = WebDriver.findElements(TITLE_SEARCH_RESULT);
         List<String> listOfSearchResultTitles = new ArrayList<>();
 

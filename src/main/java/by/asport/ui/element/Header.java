@@ -1,4 +1,4 @@
-package by.asport.ui.pages;
+package by.asport.ui.element;
 
 import by.asport.webdriver.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -11,7 +11,7 @@ public class Header {
     private static final String BUTTON_CART = "//button[contains(@class,'ok-shcart__btn')]";
     private static final String CART_URL = "https://asport.by/shcart/";
 
-    public CartPage clickCartButton() {
+    public void clickCartButton() {
         WebDriverWait wait = new WebDriverWait(WebDriver.getDriver(), Duration.ofSeconds(10));
 
         WebElement buttonCartElement = wait.until(ExpectedConditions.elementToBeClickable(WebDriver.findElementByPath(BUTTON_CART)));
@@ -30,6 +30,5 @@ public class Header {
             ((org.openqa.selenium.JavascriptExecutor) WebDriver.getDriver()).executeScript("arguments[0].click();", buttonCartElement);
         }
         wait.until(ExpectedConditions.urlToBe(CART_URL));
-        return new CartPage();
     }
 }
