@@ -28,7 +28,16 @@ public class HomePageTest extends BaseLogger {
     @DisplayName("Cart is clickable when not empty")
     public void test2() {
     HomePage homePage = new HomePage();
-    homePage.addFirstProductToCart();
+    homePage.addFirstFoundProductToCart();
     Assertions.assertTrue(homePage.isCartClickable());
+    }
+
+    @Test
+    @DisplayName("Add product to cart, then delete, cart is not clickable")
+    public void test3() {
+        HomePage homePage = new HomePage();
+        homePage.addFirstFoundProductToCart();
+        homePage.removeProductFromCart();
+        Assertions.assertTrue(homePage.isCartClickable());
     }
 }

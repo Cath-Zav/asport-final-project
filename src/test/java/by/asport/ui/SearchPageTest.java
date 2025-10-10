@@ -33,7 +33,7 @@ public class SearchPageTest extends BaseLogger {
         searchPage.sendKeysToSearch("Палатка туристическая 3-х местная Tramp Lite Tourist 3 Sand (V2) (4000 mm)");
         searchPage.startSearch();
 
-        Assertions.assertEquals("Палатка туристическая 3-х местная Tramp Lite Tourist 3 Sand (V2) (4000 mm)", searchPage.getSearchResultFirstItemTitleText());
+        Assertions.assertEquals("Палатка туристическая 3-х местная Tramp Lite Tourist 3 Sand (V2) (4000 mm)", searchPage.getSearchResultTitleText());
     }
 
     @ParameterizedTest
@@ -44,7 +44,7 @@ public class SearchPageTest extends BaseLogger {
         searchPage.sendKeysToSearch(searchKey);
         searchPage.startSearch();
 
-        List<String> searchResults = searchPage.getSearchResultItemsTitleText();
+        List<String> searchResults = searchPage.getSearchResultsTitleText();
 
         assertThat(searchResults)
                 .as("The list of searches should not be empty")
@@ -71,7 +71,7 @@ public class SearchPageTest extends BaseLogger {
         searchPage.startSearch();
         WebDriver.pauseSeconds(4);
 
-        List<String> searchResults = searchPage.getSearchResultItemsTitleText();
+        List<String> searchResults = searchPage.getSearchResultsTitleText();
 
         assertThat(searchResults)
                 .as("The list of searches should not be empty")
