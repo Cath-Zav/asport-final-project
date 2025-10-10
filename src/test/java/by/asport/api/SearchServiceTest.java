@@ -2,7 +2,6 @@ package by.asport.api;
 
 import by.asport.logger.BaseLogger;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -75,6 +74,6 @@ public class SearchServiceTest extends BaseLogger {
 
         assertAll(
                 () -> assertEquals(200, searchService.getResponseStatusCode()),
-                () ->assertEquals("Не найдено ни одного товара по запросу", searchService.getNotFoundMessage()));
+                () -> assertEquals("Не найдено ни одного товара по запросу", searchService.getNotFoundMessage()));
     }
 }
