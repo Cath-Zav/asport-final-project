@@ -37,7 +37,7 @@ public class HomePageTest extends BaseLogger {
     public void test3() {
         HomePage homePage = new HomePage();
         homePage.addFirstFoundProductToCart();
-        homePage.removeProductFromCart();
+        homePage.header().removeProductFromCart();
         Assertions.assertTrue(homePage.isCartClickable());
     }
 }

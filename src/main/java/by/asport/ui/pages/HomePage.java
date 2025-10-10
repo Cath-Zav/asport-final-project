@@ -44,14 +44,6 @@ public class HomePage {
         WebDriver.findElementByPath(BUTTON_ADD_TO_CARD).click();
     }
 
-    @Step("Remove product from cart")
-    public void removeProductFromCart() {
-        WebElement cartIconToHover = WebDriver.findElementByPath("//button[@class='ok-shcart__btn ok-shcart__ico']");
-        Actions action = new Actions(WebDriver.getDriver());
-        action.moveToElement(cartIconToHover).perform();
-        WebDriver.findElementByPath("//a[@class='ok-shcart__close']").click();
-    }
-
     public boolean isCartClickable() {
         return WebDriver.findElementByPath(CART_BUTTON_IS_ENABLED).isDisplayed();
     }
