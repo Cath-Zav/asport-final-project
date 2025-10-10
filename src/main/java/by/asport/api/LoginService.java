@@ -1,5 +1,6 @@
 package by.asport.api;
 
+import io.qameta.allure.Step;
 import io.restassured.response.Response;
 
 import java.util.HashMap;
@@ -34,6 +35,7 @@ public class LoginService extends BaseService {
         return headers;
     }
 
+    @Step("Do Login request")
     public void doRequest(String email, String password) {
         response = given()
                 .headers(createHeaders())
@@ -48,6 +50,7 @@ public class LoginService extends BaseService {
     public String getInvalidBodyMessage() {
         return response.getBody().path("message");
     }
+
 
     public String getInvalidBodyErrorsPassword() {
         return response.getBody().path("errors.password[0]");

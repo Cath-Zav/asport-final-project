@@ -1,5 +1,6 @@
 package by.asport.api;
 
+import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -21,6 +22,7 @@ public class SearchService extends BaseService{
 
     private Response resp;
 
+    @Step("Get search token")
     public void getToken(String search) {
         Response responseWithToken =
                 given()
@@ -45,6 +47,7 @@ public class SearchService extends BaseService{
         return headersExtended;
     }
 
+    @Step("Do search request")
     public void searchRequest(String searchKey) {
 
         resp = given()
@@ -61,14 +64,17 @@ public class SearchService extends BaseService{
                 .response();
     }
 
+    @Step("Get response status code")
     public int getResponseStatusCode() {
         return resp.getStatusCode();
     }
 
+    @Step("Get response body")
     public String getResponceBody() {
         return resp.getBody().prettyPrint();
     }
 
+    @Step("Get product titles")
     public List<String> getProductTitles() {
         String html = resp.jsonPath().getString("content");
         if (html == null) return List.of();
@@ -79,6 +85,7 @@ public class SearchService extends BaseService{
                 .toList();
     }
 
+    @Step("Get product title")
     public String getProductTitle() {
         String html = resp.jsonPath().getString("content");
         Document doc = Jsoup.parse(html);
@@ -86,6 +93,7 @@ public class SearchService extends BaseService{
         return els.text();
     }
 
+    @Step("Get 'not found' message'")
     public String getNotFoundMessage() {
         String html = resp.jsonPath().getString("content");
         Document doc = Jsoup.parse(html);

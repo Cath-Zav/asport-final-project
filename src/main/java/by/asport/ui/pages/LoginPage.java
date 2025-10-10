@@ -1,6 +1,7 @@
 package by.asport.ui.pages;
 
 import by.asport.webdriver.WebDriver;
+import io.qameta.allure.Step;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -51,6 +52,7 @@ public class LoginPage {
         WebDriver.findElementByPath(PASSWORD_FIELD).sendKeys(password);
     }
 
+    @Step("Fill Login form")
     public void fillLoginForm(String email, String password) {
         sendKeyLogin(email);
         sendKeyPassword(password);

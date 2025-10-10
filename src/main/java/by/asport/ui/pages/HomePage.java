@@ -27,6 +27,7 @@ public class HomePage {
         return this;
     }
 
+    @Step("Click login")
     public void clickLogin() {
         WebDriver.clickElement(LINK_PERSONAL_CABINET);
     }
@@ -35,6 +36,7 @@ public class HomePage {
         return WebDriver.findElementByPath(CART_BUTTON_IS_DISABLED).isDisplayed();
     }
 
+    @Step("Add product to cart")
     public void addFirstProductToCart() {
         WebElement cardToHover = WebDriver.findElementByPath(PRODUCT_CARD);
         Actions action = new Actions(WebDriver.getDriver());

@@ -1,6 +1,7 @@
 package by.asport.api;
 
 import by.asport.utils.CartUtils;
+import io.qameta.allure.Step;
 import io.restassured.response.Response;
 
 import java.net.URLDecoder;
@@ -38,6 +39,7 @@ public class CartService extends BaseService {
         return params;
     }
 
+    @Step("Add product to cart")
     public void AddToCart(String data_id, String quant) {
         addToCartResponse = given()
                 .headers("Accept", "application/json, text/javascript, */*; q=0.01")
@@ -63,6 +65,7 @@ public class CartService extends BaseService {
         return addToCartResponse.getBody().path("message");
     }
 
+    @Step("Go to cart")
     public void goToCart() {
         cartResponse =
                 given()
@@ -74,6 +77,7 @@ public class CartService extends BaseService {
                         .then().extract().response();
     }
 
+    @Step("Get product title in cart")
     public String getProductTitleInCart(int index) {
         listOfProductsInCart =  cartResponse.jsonPath().getList("items.title", String.class);
         return listOfProductsInCart.get(index);
