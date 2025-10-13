@@ -12,6 +12,6 @@ public class CartUtils {
     }
 
     public static String getRandomProductQuant() {
-        return String.valueOf((int) Math.random() * 10000);
+        return String.valueOf((int) (Math.random() * 10000));
     }
 }
